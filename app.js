@@ -10,6 +10,7 @@
             type: '',
             cfg: '',
             template: '',
+            bgcolor: '',
             ready: false,
             data: {}
         },
@@ -79,6 +80,7 @@
 
         initialize: function() {
 
+            this.$defaultColors = [ "#8C3565", "#45B9B1", "#FF9625", "#0BADC0", "#01B05D", "#E8623B", "#FFC32F" ];
             this.$widgets = this.$("widget");
 
             this.$grid = this.$(".gridster ul");
@@ -89,6 +91,7 @@
             this.listenTo(app.widgets, 'add', this.addWidget);
             app.widgets.on("change:ready", this.updateWidget, this);
 
+            var $this = this;
             _.each(this.$widgets, function(child, index, list) {
                 var config = $(child).data();
                 var type = config.type;
@@ -99,7 +102,8 @@
                     $.get(template, function(template) {
                         var widget = new app.Widget({
                             cfg: config,
-                            template: _.template(template)
+                            template: _.template(template),
+                            bgcolor: $this.$defaultColors[app.widgets.length%$this.$defaultColors.length]
                         });
                         app.widgets.push(widget);
                     });
@@ -149,7 +153,16 @@
         render: function() {
             //console.log("Rendering widget: " + this.model.get("id"));
             var template = this.model.get("template");
-            this.$el.html(template({ model: this.model.getData() }));
+            var output = template({ model: this.model.getData() });
+            output = $(output);
+
+            var cfg = this.model.cfg();
+            output.addClass("widget widget-" +cfg.type);
+
+            var bg = !!cfg.bgcolor ? cfg.bgcolor : this.model.get("bgcolor");
+            output.css("background-color", bg);
+
+            this.$el.html(output);
 
             return this;
         }
