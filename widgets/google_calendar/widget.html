@@ -1,0 +1,18 @@
+<div class="widget widget-google_calendar">
+    <% if(!model.events) { %>
+    <h1>Calendar widget</h1>
+    <% } else { %>
+
+    <h3><%= model.title %></h3>
+    <ul>
+    <% _.each(model.events, function(event) { %>
+        <li>
+            <span class="text-muted"><%= event.date %></span> <%= event.title %>
+        </li>
+    <% }); %>
+    </ul>
+
+    <br/><br/>
+    <div class="text-muted smaller">Last updated <%= model.lastUpdated %></div>
+    <% } %>
+</div>
