@@ -14,4 +14,4 @@ A widget to display a google calendar feed.
 
  - `data-itemcount` the maximum number of items to display
  - `data-url` the url of the calendar feed, the feed must either be public or the shareable private url and you must append ?alt=json
- - `data-frequency` how often to update (in seconds)
+ - `data-frequency` how often to update (see main README for more info)

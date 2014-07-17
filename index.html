@@ -54,12 +54,13 @@
         
         <div id="app-container">
             <widgets>
-                <widget data-id="widget1" data-type="random_number" data-max="10" data-min="1" data-frequency="5"></widget>
-                <widget data-id="widget2" data-type="random_number" data-max="100" data-min="0" data-frequency="3"></widget>
+                <widget data-id="widget1" data-type="random_number" data-max="10" data-min="1" data-frequency="5s"></widget>
+                <widget data-id="widget2" data-type="random_number" data-max="100" data-min="0" data-frequency="3s"></widget>
                 <widget data-id="widget3" data-type="text" data-title="HELLO!" data-text="I'm a text widget"></widget>
-                <widget data-id="widgetmooncal" data-type="google_calendar" data-frequency="3600" data-itemcount="5"
+                <widget data-id="widgetmooncal" data-type="google_calendar" data-frequency="1h" data-itemcount="5"
                     data-url="http://www.google.com/calendar/feeds/ht3jlfaac5lfd6263ulfh4tql8%40group.calendar.google.com/public/full?alt=json"></widget>
                 <widget data-id="widget5" data-type="text" data-title="HELLO!" data-text="I'm a 2nd text widget"></widget>
+                <widget data-id="widget6" data-type="weather" data-frequency="20m"></widget>
             </widgets>
 
             <div class="gridster">
@@ -72,6 +73,7 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js" ></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js" ></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.gridster/0.5.3/jquery.gridster.min.js" ></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
         <script type="text/javascript" src="app.js"></script>
     </body>
 </html>

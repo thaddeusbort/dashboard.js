@@ -9,6 +9,7 @@
             id: '',
             type: '',
             cfg: '',
+            index: 0,
             template: '',
             bgcolor: '',
             ready: false,
@@ -23,24 +24,28 @@
             // if an init function exists for this widget, run it
             if(typeof window[fnname] == "function") {
                 var ready = window[fnname](this);
-                this.set("ready", !!ready);
+                this.isReady(!!ready);
             } else {
-                this.set("ready", true);
+                this.isReady(true);
             }
         },
         loadDependency: function(url) {
-            this.set("ready", false);
+            this.isReady(false);
             var $this = this;
             $.getScript(url, function(script, textStatus, jqxhr) {
-                $this.set("ready", true);
+                $this.isReady(true);
             })
             .fail(function(jqxhr, settings, exception) {
-                console.log("failed getting dependency for widget " + this.get("id"));
+                console.log("failed getting dependency for widget " + this.id);
                 console.log(exception);
             });
         },
-        isLoaded: function() {
-            return this.get("ready");
+        isReady: function(val) {
+            if(val == undefined)
+                return this.get("ready");
+            else {
+                this.set("ready", val);
+            }
         },
         cfg: function() {
             return this.get("cfg");
@@ -62,8 +67,32 @@
                 this.set("data", d);
         },
         getFrequency: function() {
-            var frequency = this.cfg().frequency;
-            return !!frequency ? frequency*1000 : 0;
+            var frequencyStr = this.cfg().frequency;
+            var frequency = 0;
+            if(!!frequencyStr) {
+                var match = frequencyStr.toString().match(/(\d+)([s|m|h|d])?/i);
+                if(!!match) {
+                    var val = parseInt(match[1]);
+                    switch(match[2]) {
+                        case "s":
+                            frequency = val*1000;
+                            break;
+                        case "h":
+                            frequency = val*3600000;
+                            break;
+                        case "d":
+                            frequency = val*86400000;
+                            break;
+                        case "m":
+                        default:
+                            frequency = val*60000;
+                    }
+                }
+            }
+            // don't allow the freuency to be set faster than 5 seconds
+            if(frequency > 0 & frequency < 5000)
+                frequency = 5000;
+            return frequency;
         }
     });
 
@@ -102,14 +131,15 @@
                     $.get(template, function(template) {
                         var widget = new app.Widget({
                             cfg: config,
+                            index: (index+1),
                             template: _.template(template),
-                            bgcolor: $this.$defaultColors[app.widgets.length%$this.$defaultColors.length]
+                            bgcolor: $this.$defaultColors[index%$this.$defaultColors.length]
                         });
                         app.widgets.push(widget);
                     });
                 })
                 .fail(function(jqxhr, settings, exception) {
-                    console.log("failed getting script");
+                    console.log("failed getting script for " + type + " widget " + config.id);
                     console.log(exception);
                 });
             });
@@ -117,15 +147,15 @@
 
         addWidget: function(widget) {
             var view = new app.WidgetView({ model: widget });
-            this.$gridster.add_widget(view.el);
-
-            //console.log("widget " + widget.id + " ready: " + widget.isLoaded());
-            if(widget.isLoaded())
+            this.$gridster.add_widget(view.el, 1, 1, widget.get("index"), 1);
+            
+            //console.log("widget " + widget.id + " ready: " + widget.isReady());
+            if(widget.isReady())
                 this.updateWidget(widget);
         },
 
         updateWidget: function(widget, value, options) {
-            if(!widget.isLoaded())
+            if(!widget.isReady())
                 return;
 
             var frequency = widget.getFrequency();
@@ -151,7 +181,7 @@
             this.model.on("change", this.render, this);
         },
         render: function() {
-            //console.log("Rendering widget: " + this.model.get("id"));
+            //console.log("Rendering widget: " + this.model.id);
             var template = this.model.get("template");
             var output = template({ model: this.model.getData() });
             output = $(output);

@@ -13,4 +13,4 @@ A widget to display a random number.
 
  - `data-max` the maximum number to display
  - `data-min` the minimum number to display
- - `data-frequency` how often to update (in seconds)
+ - `data-frequency` how often to update (see main README for more info)

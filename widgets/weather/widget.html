@@ -1,0 +1,16 @@
+<div>
+    <% if(!model.temp) { %>
+
+    <h1>Weather widget</h1>
+
+    <% } else { %>
+
+    <h4>Weather for <%= model.name %></h4>
+    <h2><%= model.temp %></h2>
+    <div class="smaller"><%= model.temp_min %> / <%= model.temp_max %></div>
+
+    <div><%= model.description %></div>
+    
+    <div class="text-muted smaller">Last updated <%= model.last_updated %></div>
+    <% } %>
+</div>
