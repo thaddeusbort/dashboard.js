@@ -29,7 +29,7 @@
                 this.isReady(true);
             }
         },
-        loadDependency: function(url) {
+        loadScript: function(url) {
             this.isReady(false);
             var $this = this;
             $.getScript(url, function(script, textStatus, jqxhr) {
@@ -39,6 +39,11 @@
                 console.log("failed getting dependency for widget " + this.id);
                 console.log(exception);
             });
+        },
+        loadStyle: function(url) {
+            $("<link>")
+                .appendTo("head")
+                .attr({type: "text/css", rel: "stylesheet", href: url});
         },
         isReady: function(val) {
             if(val == undefined)
