@@ -1,3 +1,4 @@
+
 var dashboardjs_widget_leaflet_map = null;
 var dashboardjs_widget_leaflet_data_layer = null;
 
@@ -19,7 +20,7 @@ function leaflet_getdata(cfg, callback) {
             }).addTo(dashboardjs_widget_leaflet_map);
         }
 
-        //console.log(data);
+        // console.log(data);
         if(!!dashboardjs_widget_leaflet_data_layer)
             dashboardjs_widget_leaflet_map.removeLayer(dashboardjs_widget_leaflet_data_layer);
 
@@ -27,7 +28,6 @@ function leaflet_getdata(cfg, callback) {
         dashboardjs_widget_leaflet_data_layer = L.geoJson(data, {
             onEachFeature: function(feature, layer) {
                 var title = feature.properties && feature.properties.title;
-                console.log(title);
                 if(!!title)
                     popup = layer.bindPopup(title);
             },
@@ -37,10 +37,11 @@ function leaflet_getdata(cfg, callback) {
             }
         }).addTo(dashboardjs_widget_leaflet_map);
 
-        popup.openPopup();
         if(dashboardjs_widget_leaflet_data_layer.toGeoJSON().features.length > 0)
             dashboardjs_widget_leaflet_map.fitBounds(dashboardjs_widget_leaflet_data_layer);
-        
+
+        if(!!popup)
+            popup.openPopup();
 
         // don't call the callback method because we don't want the html to be overwritten
     });

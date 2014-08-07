@@ -4,7 +4,7 @@ dashboard.js weather widget
 A widget to display the current weather. You can set the data-location attribute to a location or the widget will attempt to use HTML5 geolocation to determine your location.
 
 ## Syntax
-    <widget data-id="weather_widget_id" data-type="weather" data-frequency="300" data-location="Loveland,OH"></widget>
+    <widget data-id="weather_widget_id" data-type="weather" data-frequency="5m" data-location="Loveland,OH"></widget>
 
 ## Type
 `weather`

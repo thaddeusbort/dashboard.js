@@ -8,7 +8,7 @@ http://rawgit.com/thaddeusbort/dashboard.js/master/index.html
 
 
 # Introduction
-Dashboard.js is a backbone based framework for building dashboard for displaying your important data.
+Dashboard.js is a backbone based framework for building a dashboard to display your important data.
 
 #### Features:
 
@@ -21,7 +21,11 @@ Dashboard.js is a backbone based framework for building dashboard for displaying
 Download this project. To configure which widgets to display and their settings edit the `<widgets>` section of index.html.
 
 ### Widget Configuration
-Widgets can have any number of configuration properties that are setting using `data-` attributes on the widget tag. 
+Widgets can have any number of configuration properties that are set using `data-` attributes on the widget tag. 
+
+Every widget must have an `id` and a `type` config attribute. The `id` is any unique id. The `type` attribute is
+the type of widget. To see all the available widget types look in the widgets folder. The type will be the name of the folder:
+ `text`, `weather`, `google_calendar`, ...
 
 This example shows how the attributes `title` and `text` are set for the text widget:
 
@@ -30,6 +34,15 @@ This example shows how the attributes `title` and `text` are set for the text wi
 ```
 
 The widget README should specify which attributes are available.
+
+#### Size Attributes
+All widgets support the `width` and `height` attributes. These can be used to make a widget take up more than a single space in the grid. 
+
+This example shows a map widget that will fit in a 2x2 grid section:
+
+```html
+<widget data-id="leaflet_widget_id" data-type="leaflet" data-width="2" data-height="2" data-jsonurl="http://api.tiles.mapbox.com/v3/examples.map-zr0njcqy/markers.geojson"></widget>
+```
 
 #### Frequency Attribute
 A common attribute used by any widget that needs to be updated on a regular interval is the `frequency` attribute. The frequency attribute can be set in seconds, minutes, hours, or days by using the first letter of the unit type after the number.
