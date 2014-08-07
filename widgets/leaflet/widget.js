@@ -23,22 +23,21 @@ function leaflet_getdata(cfg, callback) {
         if(!!dashboardjs_widget_leaflet_data_layer)
             dashboardjs_widget_leaflet_map.removeLayer(dashboardjs_widget_leaflet_data_layer);
 
+        var popup;
         dashboardjs_widget_leaflet_data_layer = L.geoJson(data, {
             onEachFeature: function(feature, layer) {
                 var title = feature.properties && feature.properties.title;
                 console.log(title);
                 if(!!title)
-                    layer.bindPopup(title)
-                         .openPopup();
+                    popup = layer.bindPopup(title);
             },
             filter: function(feature, layer) {
                 // only show active
                 return !(feature.properties && feature.properties.active === "false");
             }
-        });
+        }).addTo(dashboardjs_widget_leaflet_map);
 
-        dashboardjs_widget_leaflet_data_layer.addTo(dashboardjs_widget_leaflet_map);
-
+        popup.openPopup();
         if(dashboardjs_widget_leaflet_data_layer.toGeoJSON().features.length > 0)
             dashboardjs_widget_leaflet_map.fitBounds(dashboardjs_widget_leaflet_data_layer);
         

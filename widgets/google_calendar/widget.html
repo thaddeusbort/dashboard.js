@@ -4,6 +4,10 @@
     <% } else { %>
 
     <h3><%= model.title %></h3>
+
+    <% if(model.events.length == 0) { %>
+        <h4>No upcoming events</h4>
+    <% } %>
     <ul>
     <% _.each(model.events, function(event) { %>
         <li>
