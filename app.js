@@ -9,13 +9,12 @@
             id: '',
             type: '',
             cfg: '',
-            index: 0,
             template: '',
             bgcolor: '',
             ready: false,
             data: {}
         },
-        initialize: function(attributes, options) {
+        init: function(attributes, options) {
             var cfg = this.cfg();
             this.set("id", cfg.id);
             this.set("type", cfg.type);
@@ -119,10 +118,10 @@
 
             this.$grid = this.$(".gridster ul");
             this.$gridster = this.$grid.gridster({
-                widget_base_dimensions: [300, 360]
+                widget_base_dimensions: [300, 360],
+                max_cols: 4
             }).data("gridster");
 
-            this.listenTo(app.widgets, 'add', this.addWidget);
             app.widgets.on("change:ready", this.updateWidget, this);
 
             var $this = this;
@@ -130,33 +129,39 @@
                 var config = $(child).data();
                 var type = config.type;
                 var src = "widgets/" + type + "/widget.js";
-                var template = "widgets/" + type + "/widget.html";
+                var templateUrl = "widgets/" + type + "/widget.html";
+
+                var widget = new app.Widget({
+                    cfg: config,
+                    bgcolor: $this.$defaultColors[index%$this.$defaultColors.length]
+                });
 
                 $.getScript(src, function(script, textStatus, jqxhr) {
-                    $.get(template, function(template) {
-                        var widget = new app.Widget({
-                            cfg: config,
-                            index: (index+1),
-                            template: _.template(template),
-                            bgcolor: $this.$defaultColors[index%$this.$defaultColors.length]
-                        });
+                    $.get(templateUrl, function(template) {
+                        widget.set("template", _.template(template));
+                        widget.init();
+
                         app.widgets.push(widget);
+
+                        if(widget.isReady())
+                            $this.updateWidget(widget);
                     });
                 })
                 .fail(function(jqxhr, settings, exception) {
                     console.log("failed getting script for " + type + " widget " + config.id);
                     console.log(exception);
                 });
+
+                $this.addWidget(widget);
             });
         },
 
         addWidget: function(widget) {
             var view = new app.WidgetView({ model: widget });
-            this.$gridster.add_widget(view.el, 1, 1, widget.get("index"), 1);
-            
-            //console.log("widget " + widget.id + " ready: " + widget.isReady());
-            if(widget.isReady())
-                this.updateWidget(widget);
+
+            var size_x = widget.cfg().width;
+            var size_y = widget.cfg().height;
+            this.$gridster.add_widget(view.el, size_x, size_y);
         },
 
         updateWidget: function(widget, value, options) {
@@ -188,6 +193,8 @@
         render: function() {
             //console.log("Rendering widget: " + this.model.id);
             var template = this.model.get("template");
+            if(!template)
+                return this;
             var output = template({ model: this.model.getData() });
             output = $(output);
 
