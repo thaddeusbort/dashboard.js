@@ -18,10 +18,12 @@ function google_calendar_getdata(cfg, callback) {
                     if(!!entry.gd$when && entry.gd$when.length > 0) {
                         var start = new Date(entry.gd$when[0].startTime + " 00:00");
                         var end = new Date(entry.gd$when[0].endTime + " 00:00");
+                        if(end > start)
+                            end.setDate(end.getDate()-1);
                         if(today <= end) {
                             memo.push({
                                 startDate: start,
-                                date: moment(start).format("M/D") + (start == end ? "" : "-" + moment(end).format("M/D")),
+                                date: moment(start).format("M/D") + (start.getTime() == end.getTime() ? "" : "-" + moment(end).format("M/D")),
                                 title: entry.title.$t
                             });
                         }
