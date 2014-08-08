@@ -16,8 +16,8 @@ function google_calendar_getdata(cfg, callback) {
             _.sortBy(
                 _.reduce(data.feed.entry, function(memo, entry) {
                     if(!!entry.gd$when && entry.gd$when.length > 0) {
-                        var start = new Date(entry.gd$when[0].startTime + " 00:00");
-                        var end = new Date(entry.gd$when[0].endTime + " 00:00");
+                        var start = google_calendar_parse_date(entry.gd$when[0].startTime);
+                        var end = google_calendar_parse_date(entry.gd$when[0].endTime);
                         if(end > start)
                             end.setDate(end.getDate()-1);
                         if(today <= end) {
@@ -36,4 +36,9 @@ function google_calendar_getdata(cfg, callback) {
         callback(output);
     });
     return { };
+}
+
+function google_calendar_parse_date(datestring) {
+    var parts = datestring.split("-");
+    return new Date(parts[0], parts[1]-1, parts[2]);
 }
