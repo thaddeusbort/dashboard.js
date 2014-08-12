@@ -14,11 +14,13 @@
             ready: false,
             data: {}
         },
-        init: function(attributes, options) {
+        initialize: function(attributes, options) {
             var cfg = this.cfg();
             this.set("id", cfg.id);
             this.set("type", cfg.type);
-            var fnname = cfg.type + "_init";
+        },
+        init: function() {
+            var fnname = this.cfg().type + "_init";
 
             // if an init function exists for this widget, run it
             if(typeof window[fnname] == "function") {
