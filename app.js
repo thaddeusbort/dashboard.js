@@ -127,11 +127,12 @@
             app.widgets.on("change:ready", this.updateWidget, this);
 
             var $this = this;
+            var timestamp = new Date().getTime();
             _.each(this.$widgets, function(child, index, list) {
                 var config = $(child).data();
                 var type = config.type;
                 var src = "widgets/" + type + "/widget.js";
-                var templateUrl = "widgets/" + type + "/widget.html";
+                var templateUrl = "widgets/" + type + "/widget.html?u=" + timestamp;
 
                 var widget = new app.Widget({
                     cfg: config,
@@ -193,6 +194,7 @@
             this.model.on("change", this.render, this);
         },
         render: function() {
+            // this only gets called if the underlying model changes
             //console.log("Rendering widget: " + this.model.id);
             var template = this.model.get("template");
             if(!template)

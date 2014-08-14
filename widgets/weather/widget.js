@@ -1,30 +1,31 @@
 var dashboard_widget_weather_url = null;
-var dashboard_widget_weather_location = { query:"", lat:null, lon:null };
 var dashboard_widget_weather_default_location = "Auckland";
 
 function weather_init(widget) {
     var url = "http://api.openweathermap.org/data/2.5/weather?units=imperial&";
     
     var location = widget.cfg().location;
-    if(!!location) {
-        dashboard_widget_weather_location.query = location;
-    } else {
+    
+    dashboard_widget_weather_url = url + "q=" +
+        (!!location ? location
+            : dashboard_widget_weather_default_location);
+
+    if(!location) {
+        // if no location was set, attempt to get location from browser
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                dashboard_widget_weather_location.lat = position.coords.latitude;
-                dashboard_widget_weather_location.lon = position.coords.longitude;
                 dashboard_widget_weather_url = url + "lat=" + position.coords.latitude + "&lon=" + position.coords.longitude;
+                widget.isReady(true);
+            }, function() {
+                console.log("Weather widget was unable to detect a location. Showing weather for " + dashboard_widget_weather_default_location + ".");
                 widget.isReady(true);
             });
             return false;
         } else {
-            dashboard_widget_weather_location.query = dashboard_widget_weather_default_location;
             console.log("Weather widget was unable to detect a location. Showing weather for " + dashboard_widget_weather_default_location + ".");
         }
     }
 
-    if(!!dashboard_widget_weather_location.query)
-        dashboard_widget_weather_url = url + "q=" + dashboard_widget_weather_location.query;
     return true;
 }
 
